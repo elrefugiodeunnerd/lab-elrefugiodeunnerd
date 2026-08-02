@@ -1,0 +1,135 @@
+/**
+ * Design tokens — workbench, not dashboard.
+ *
+ * Monospace for metadata (dates, tech, progress numbers); humanist sans for prose.
+ * Hairline borders, faint grid texture, restrained motion. Dark and light both
+ * first-class via prefers-color-scheme.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Colour — light mode base */
+  --surface-0: #fdfcfb;
+  --surface-1: #f7f5f3;
+  --surface-2: #edeae6;
+  --border: #ddd8d1;
+  --text: #12100e;
+  --text-muted: #6b6660;
+  --accent: #e8a33d;
+  --accent-hover: #d19135;
+
+  /* Status colours — light */
+  --status-en-curso: #2d7d46;
+  --status-en-curso-bg: #e7f5ec;
+  --status-retomado: #5b7ac7;
+  --status-retomado-bg: #e8edf8;
+  --status-abandonado-temporalmente: #c76b1f;
+  --status-abandonado-temporalmente-bg: #fef3e7;
+  --status-abandonado-largo-plazo: #8b7f76;
+  --status-abandonado-largo-plazo-bg: #f2f0ed;
+  --status-finalizado: #4a4844;
+  --status-finalizado-bg: #e9e7e4;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --line-tight: 1.25;
+  --line-normal: 1.5;
+  --line-loose: 1.75;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+
+  /* Transitions */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-0: #12100e;
+    --surface-1: #1c1916;
+    --surface-2: #28241f;
+    --border: #3d3731;
+    --text: #fdfcfb;
+    --text-muted: #a39c94;
+    --accent: #f4b95a;
+    --accent-hover: #f7c976;
+
+    --status-en-curso: #5ebd7a;
+    --status-en-curso-bg: #1e3526;
+    --status-retomado: #7a9ce6;
+    --status-retomado-bg: #202938;
+    --status-abandonado-temporalmente: #e89254;
+    --status-abandonado-temporalmente-bg: #3a2717;
+    --status-abandonado-largo-plazo: #a39c94;
+    --status-abandonado-largo-plazo-bg: #28241f;
+    --status-finalizado: #d4cfca;
+    --status-finalizado-bg: #2a2621;
+  }
+}
+
+/* Theme toggle override — manual preference wins */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --surface-0: #fdfcfb;
+  --surface-1: #f7f5f3;
+  --surface-2: #edeae6;
+  --border: #ddd8d1;
+  --text: #12100e;
+  --text-muted: #6b6660;
+  --accent: #e8a33d;
+  --accent-hover: #d19135;
+
+  --status-en-curso: #2d7d46;
+  --status-en-curso-bg: #e7f5ec;
+  --status-retomado: #5b7ac7;
+  --status-retomado-bg: #e8edf8;
+  --status-abandonado-temporalmente: #c76b1f;
+  --status-abandonado-temporalmente-bg: #fef3e7;
+  --status-abandonado-largo-plazo: #8b7f76;
+  --status-abandonado-largo-plazo-bg: #f2f0ed;
+  --status-finalizado: #4a4844;
+  --status-finalizado-bg: #e9e7e4;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --surface-0: #12100e;
+  --surface-1: #1c1916;
+  --surface-2: #28241f;
+  --border: #3d3731;
+  --text: #fdfcfb;
+  --text-muted: #a39c94;
+  --accent: #f4b95a;
+  --accent-hover: #f7c976;
+
+  --status-en-curso: #5ebd7a;
+  --status-en-curso-bg: #1e3526;
+  --status-retomado: #7a9ce6;
+  --status-retomado-bg: #202938;
+  --status-abandonado-temporalmente: #e89254;
+  --status-abandonado-temporalmente-bg: #3a2717;
+  --status-abandonado-largo-plazo: #a39c94;
+  --status-abandonado-largo-plazo-bg: #28241f;
+  --status-finalizado: #d4cfca;
+  --status-finalizado-bg: #2a2621;
+}

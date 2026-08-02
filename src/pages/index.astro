@@ -1,0 +1,207 @@
+---
+import { getCollection } from 'astro:content';
+import FilterBar from '../components/FilterBar.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { collectCategories, sortProjects } from '../lib/sort';
+import { STATUSES_BY_WEIGHT, STATUS_META } from '../lib/status';
+
+/**
+ * The homepage IS the website. Every project renders here; there are no detail
+ * routes, no archive, no pagination. Filtering and expansion happen in place.
+ */
+const projects = sortProjects(await getCollection('proyectos'));
+const categories = collectCategories(projects);
+
+// Only offer status filters that actually match something.
+const present = new Set(projects.map((project) => project.data.status));
+const statuses = STATUSES_BY_WEIGHT.filter((status) => present.has(status));
+
+const activeCount = projects.filter((p) => p.data.status === 'en-curso').length;
+
+const description =
+  'Todo lo que estoy cacharreando ahora mismo: proyectos grandes, pruebas de una tarde y cosas a medias que algún día volverán.';
+---
+
+<BaseLayout title="El Cacharreo de un Nerd" description={description}>
+  <div class="page">
+    <header class="header">
+      <div class="header__top">
+        <p class="header__eyebrow meta">lab.elrefugiodeunnerd.es</p>
+        <ThemeToggle />
+      </div>
+
+      <h1 class="header__title">El Cacharreo de un Nerd</h1>
+
+      <p class="header__intro">
+        Mi taller... bueno, más bien mi escaparate. Aquí comparto todo lo que
+        estoy cacharreando, desde instalar un navegador un domingo hasta montar
+        un servidor casero.
+      </p>
+
+      <p class="header__status meta">
+        {
+          activeCount > 0
+            ? `${activeCount} ${activeCount === 1 ? 'cosa' : 'cosas'} entre manos ahora mismo`
+            : 'Ahora mismo nada en marcha — pero nada está descartado'
+        }
+        <span aria-hidden="true"> · </span>
+        {projects.length} en total
+      </p>
+    </header>
+
+    <main id="taller">
+      <FilterBar
+        categories={categories}
+        statuses={statuses}
+        total={projects.length}
+      />
+
+      {
+        projects.length > 0 ? (
+          <>
+            <div class="grid" data-grid>
+              {projects.map((project) => (
+                <ProjectCard project={project} />
+              ))}
+            </div>
+
+            {/* Shown by `filters.ts` when a combination matches nothing. */}
+            <p class="empty" data-empty-state hidden>
+              Nada por aquí con esos filtros. Prueba con otra combinación.
+            </p>
+          </>
+        ) : (
+          <p class="empty">
+            El taller está vacío por ahora. Añade un markdown en{' '}
+            <code>src/content/proyectos/</code> y aparecerá aquí.
+          </p>
+        )
+      }
+    </main>
+
+    <footer class="footer">
+      <p class="meta">
+        Hecho con Astro · Por Claude porque no sé programar :D · Idea propia y
+        horas de pelearme con la IA
+      </p>
+      <p class="meta footer__legend">
+        {
+          STATUSES_BY_WEIGHT.map((status) => (
+            <span class="footer__status">
+              <span aria-hidden="true">{STATUS_META[status].glyph}</span>
+              {' '}
+              {STATUS_META[status].label}
+            </span>
+          ))
+        }
+      </p>
+    </footer>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initCards } from '../scripts/cards';
+  import { initFilters } from '../scripts/filters';
+  import { initTheme } from '../scripts/theme';
+
+  initTheme();
+  initCards();
+  initFilters();
+</script>
+
+<style>
+  .page {
+    max-width: 78rem;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md) var(--space-2xl);
+  }
+
+  .header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .header__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .header__eyebrow {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+  }
+
+  .header__title {
+    font-size: clamp(var(--text-2xl), 5vw, var(--text-3xl));
+    line-height: var(--line-tight);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .header__intro {
+    max-width: 46rem;
+    color: var(--text-muted);
+    line-height: var(--line-loose);
+    margin-bottom: var(--space-md);
+  }
+
+  .header__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.2rem var(--space-sm);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-1);
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+  }
+
+  /*
+   * `auto-fill` + `minmax` keeps the workbench dense at any width, and lets an
+   * expanded card claim the full row (see `.card.is-expanded`) without the
+   * layout jumping around.
+   */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+    gap: var(--space-md);
+    align-items: start;
+  }
+
+  .empty {
+    padding: var(--space-2xl) var(--space-md);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .footer__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .footer__status {
+    white-space: nowrap;
+  }
+</style>

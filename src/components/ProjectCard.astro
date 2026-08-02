@@ -1,0 +1,376 @@
+---
+import { render } from 'astro:content';
+import MetaList from './MetaList.astro';
+import ProgressBar from './ProgressBar.astro';
+import ProjectCover from './ProjectCover.astro';
+import StatusBadge from './StatusBadge.astro';
+import UpdatesList from './UpdatesList.astro';
+import { lastTouched, type Project } from '../lib/sort';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { data, id } = project;
+
+// The markdown body is the "everything else" of a project — rendered here and
+// revealed on expand.
+const { Content } = await render(project);
+
+const panelId = `panel-${id}`;
+const updated = lastTouched(project);
+const hasBody = project.body !== undefined && project.body.trim().length > 0;
+---
+
+<article
+  class="card"
+  data-project={id}
+  data-category={data.category}
+  data-status={data.status}
+  data-expanded="false"
+  id={id}
+>
+  <ProjectCover
+    cover={data.cover}
+    alt={data.coverAlt}
+    title={data.title}
+    slug={id}
+  />
+
+  <div class="card__body">
+    <div class="card__meta">
+      <span class="card__category meta">{data.category}</span>
+      <StatusBadge status={data.status} />
+    </div>
+
+    {/*
+      Button inside the heading: one accessible control that is both the
+      document outline entry and the disclosure trigger (ARIA accordion
+      practice). `aria-expanded` / `aria-controls` wire it to the panel.
+    */}
+    <h2 class="card__title">
+      <button
+        type="button"
+        class="card__toggle"
+        aria-expanded="false"
+        aria-controls={panelId}
+      >
+        {data.title}
+        {data.pinned && <span class="card__pin" title="Fijado" aria-label="Fijado">📌</span>}
+      </button>
+    </h2>
+
+    <p class="card__description">{data.description}</p>
+
+    <ProgressBar
+      progress={data.progress}
+      status={data.status}
+      label={data.title}
+    />
+  </div>
+
+  {/*
+    Always in the DOM: crawlers and no-JS visitors get the whole project. CSS
+    collapses it only once `html.js` is set, and `cards.ts` adds `inert` so a
+    collapsed panel leaves the tab order and the accessibility tree.
+  */}
+  <div class="card__panel" id={panelId}>
+    <div class="card__panel-inner">
+      <div class="card__panel-content">
+        {
+          hasBody && (
+            <div class="card__prose">
+              <Content />
+            </div>
+          )
+        }
+        <UpdatesList updates={data.updates} />
+      </div>
+
+      <aside class="card__panel-side">
+        <MetaList
+          started={data.started}
+          updated={updated}
+          tech={data.tech}
+          links={data.links}
+          notes={data.notes}
+        />
+      </aside>
+
+      {/*
+        Explicit way out. The card head already toggles shut, but an open panel
+        can be tall enough that the head scrolls away — so the control is
+        repeated where the reader actually ends up. `.js-only`: with scripts off
+        every panel is permanently open and this button would do nothing.
+      */}
+      <div class="card__panel-foot js-only">
+        <button
+          type="button"
+          class="card__collapse"
+          data-collapse
+          aria-label={`Cerrar ${data.title}`}
+        >
+          <span aria-hidden="true">↑</span>
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    /* Three implicit auto rows: cover, body, panel. */
+    display: grid;
+    /* Anchors the toggle's full-card hit area below. */
+    position: relative;
+    background: var(--surface-0);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition:
+      border-color var(--duration-normal) var(--ease),
+      transform var(--duration-normal) var(--ease),
+      box-shadow var(--duration-normal) var(--ease);
+  }
+
+  .card:hover {
+    border-color: var(--text-muted);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px -12px rgb(0 0 0 / 0.4);
+  }
+
+  .card:focus-within {
+    border-color: var(--accent);
+  }
+
+  /* An expanded card spans the full grid and stops lifting — it's a surface now. */
+  .card.is-expanded {
+    grid-column: 1 / -1;
+    transform: none;
+    border-color: var(--accent);
+  }
+
+  .card.is-expanded:hover {
+    transform: none;
+  }
+
+  .card__body {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+
+  .card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .card__category {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .card__title {
+    font-size: var(--text-lg);
+    line-height: var(--line-tight);
+    font-weight: 650;
+  }
+
+  .card__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+  }
+
+  /*
+   * Stretch the hit area over the whole collapsed card, so the entire card is
+   * clickable without introducing a second control for keyboard/AT users.
+   */
+  .card__toggle::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /*
+   * Once open, shrink the hit area instead of removing it: making `.card__body`
+   * the containing block re-anchors the overlay to the card's head, so the head
+   * still toggles the card shut while the panel's links and text stay usable.
+   */
+  .card.is-expanded .card__body {
+    position: relative;
+  }
+
+  .card__toggle:hover {
+    color: var(--accent);
+  }
+
+  .card__pin {
+    font-size: var(--text-sm);
+    flex-shrink: 0;
+  }
+
+  .card__description {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--line-normal);
+  }
+
+  /*
+   * 0fr -> 1fr animates height with no JS measurement and no magic max-height.
+   * Only applied under `html.js`; with scripts off the panel is simply open.
+   */
+  :global(html.js) .card__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-normal) var(--ease);
+  }
+
+  :global(html.js) .card.is-expanded .card__panel {
+    grid-template-rows: 1fr;
+  }
+
+  :global(html.js) .card__panel-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* Deep-linked cards open without animating — see `openFromHash`. */
+  .card.no-transition,
+  .card.no-transition .card__panel {
+    transition: none !important;
+  }
+
+  .card__panel-inner {
+    display: grid;
+    gap: var(--space-xl);
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 var(--space-md) var(--space-md);
+    border-top: 1px solid transparent;
+  }
+
+  .card.is-expanded .card__panel-inner {
+    border-top-color: var(--border);
+    padding-top: var(--space-lg);
+  }
+
+  @media (min-width: 48rem) {
+    .card.is-expanded .card__panel-inner {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+  }
+
+  .card__panel-content {
+    display: grid;
+    gap: var(--space-xl);
+    align-content: start;
+    min-width: 0;
+  }
+
+  .card__panel-side {
+    min-width: 0;
+  }
+
+  /* Markdown body. Kept tight — a project is notes, never an article. */
+  .card__prose {
+    font-size: var(--text-sm);
+    line-height: var(--line-loose);
+  }
+
+  .card__prose :global(> * + *) {
+    margin-top: var(--space-md);
+  }
+
+  .card__prose :global(h2),
+  .card__prose :global(h3),
+  .card__prose :global(h4) {
+    font-size: var(--text-base);
+    font-weight: 650;
+    line-height: var(--line-tight);
+    margin-top: var(--space-lg);
+  }
+
+  .card__prose :global(ul),
+  .card__prose :global(ol) {
+    padding-left: var(--space-lg);
+  }
+
+  .card__prose :global(li + li) {
+    margin-top: var(--space-xs);
+  }
+
+  .card__prose :global(code) {
+    padding: 0.1em 0.35em;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+  }
+
+  .card__prose :global(pre) {
+    padding: var(--space-md);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+  }
+
+  .card__prose :global(pre code) {
+    padding: 0;
+    background: none;
+  }
+
+  .card__prose :global(blockquote) {
+    padding-left: var(--space-md);
+    border-left: 2px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .card__prose :global(img) {
+    border-radius: var(--radius-md);
+  }
+
+  /*
+   * Spans the full row: `.card__panel-inner` is two columns at wide sizes, and
+   * the footer belongs to the panel as a whole, not to either column.
+   */
+  .card__panel-foot {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border);
+  }
+
+  .card__collapse {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    transition:
+      color var(--duration-fast) var(--ease),
+      border-color var(--duration-fast) var(--ease),
+      background var(--duration-fast) var(--ease);
+  }
+
+  .card__collapse:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--surface-0);
+  }
+</style>

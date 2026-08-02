@@ -1,0 +1,144 @@
+---
+import { formatDate, isoDate } from '../lib/sort';
+
+interface Props {
+  started: Date;
+  updated: Date;
+  tech: readonly string[];
+  links: readonly { label: string; url: string }[];
+  notes: readonly string[];
+}
+
+const { started, updated, tech, links, notes } = Astro.props;
+---
+
+<div class="meta-list">
+  <dl class="meta-list__dates">
+    <div class="meta-list__row">
+      <dt>Empezado</dt>
+      <dd><time datetime={isoDate(started)}>{formatDate(started)}</time></dd>
+    </div>
+    <div class="meta-list__row">
+      <dt>Última actividad</dt>
+      <dd><time datetime={isoDate(updated)}>{formatDate(updated)}</time></dd>
+    </div>
+  </dl>
+
+  {
+    tech.length > 0 && (
+      <section>
+        <h3 class="meta-list__heading">Herramientas</h3>
+        <ul class="meta-list__tags">
+          {tech.map((item) => (
+            <li class="meta-list__tag">{item}</li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    notes.length > 0 && (
+      <section>
+        <h3 class="meta-list__heading">Notas</h3>
+        <ul class="meta-list__notes">
+          {notes.map((note) => (
+            <li>{note}</li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    links.length > 0 && (
+      <section>
+        <h3 class="meta-list__heading">Enlaces</h3>
+        <ul class="meta-list__links">
+          {links.map((link) => (
+            <li>
+              <a href={link.url} rel="noopener noreferrer" target="_blank">
+                {link.label}
+                <span aria-hidden="true"> ↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</div>
+
+<style>
+  .meta-list {
+    display: grid;
+    gap: var(--space-lg);
+    align-content: start;
+  }
+
+  .meta-list__heading {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  .meta-list__dates {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .meta-list__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    font-size: var(--text-xs);
+  }
+
+  .meta-list__row dt {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .meta-list__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .meta-list__tag {
+    padding: 0.1rem var(--space-sm);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-1);
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas,
+      monospace;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .meta-list__notes,
+  .meta-list__links {
+    list-style: none;
+    display: grid;
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
+  }
+
+  .meta-list__notes li {
+    position: relative;
+    padding-left: var(--space-md);
+    color: var(--text-muted);
+    line-height: var(--line-normal);
+  }
+
+  .meta-list__notes li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+  }
+</style>

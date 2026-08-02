@@ -1,0 +1,179 @@
+---
+import { statusMeta, type Status } from '../lib/status';
+
+interface Props {
+  categories: readonly string[];
+  statuses: readonly Status[];
+  total: number;
+}
+
+const { categories, statuses, total } = Astro.props;
+
+/**
+ * `.js-only`: filtering is a JS enhancement over already-rendered cards, so with
+ * scripts off this bar disappears and every project stays visible. Nothing is
+ * lost — the fallback is "see everything", which is the point of the site.
+ */
+---
+
+<div class="filters js-only" data-filters>
+  <div class="filters__groups">
+    <div class="filters__group" role="group" aria-label="Filtrar por categoría">
+      <span class="filters__legend">Categoría</span>
+      <div class="filters__pills">
+        <button
+          type="button"
+          class="pill"
+          data-filter="todos"
+          data-filter-group="categoria"
+          aria-pressed="true">Todas</button
+        >
+        {
+          categories.map((category) => (
+            <button
+              type="button"
+              class="pill"
+              data-filter={category}
+              data-filter-group="categoria"
+              aria-pressed="false"
+            >
+              {category}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="filters__group" role="group" aria-label="Filtrar por estado">
+      <span class="filters__legend">Estado</span>
+      <div class="filters__pills">
+        <button
+          type="button"
+          class="pill"
+          data-filter="todos"
+          data-filter-group="estado"
+          aria-pressed="true">Todos</button
+        >
+        {
+          statuses.map((status) => (
+            <button
+              type="button"
+              class={`pill pill--${status}`}
+              data-filter={status}
+              data-filter-group="estado"
+              aria-pressed="false"
+            >
+              <span class="pill__glyph" aria-hidden="true">
+                {statusMeta(status).glyph}
+              </span>
+              {statusMeta(status).label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  {/* Announced politely so filtering gives screen-reader users feedback too. */}
+  <p class="filters__count meta" data-result-count aria-live="polite">
+    {total === 1 ? '1 proyecto' : `${total} proyectos`}
+  </p>
+</div>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md) var(--space-xl);
+    padding: var(--space-md) 0 var(--space-lg);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-xl);
+  }
+
+  .filters__groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-xl);
+  }
+
+  .filters__group {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .filters__legend {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas,
+      monospace;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .filters__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0.2rem var(--space-sm);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-1);
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    transition:
+      color var(--duration-fast) var(--ease),
+      border-color var(--duration-fast) var(--ease),
+      background var(--duration-fast) var(--ease);
+  }
+
+  .pill:hover {
+    color: var(--text);
+    border-color: var(--text-muted);
+  }
+
+  .pill__glyph {
+    font-size: 0.65em;
+  }
+
+  .pill[aria-pressed='true'] {
+    color: var(--surface-0);
+    background: var(--text);
+    border-color: var(--text);
+  }
+
+  /* Active status pills keep their own colour so the mapping stays learnable. */
+  .pill--en-curso[aria-pressed='true'] {
+    background: var(--status-en-curso);
+    border-color: var(--status-en-curso);
+  }
+  .pill--retomado[aria-pressed='true'] {
+    background: var(--status-retomado);
+    border-color: var(--status-retomado);
+  }
+  .pill--abandonado-temporalmente[aria-pressed='true'] {
+    background: var(--status-abandonado-temporalmente);
+    border-color: var(--status-abandonado-temporalmente);
+  }
+  .pill--abandonado-largo-plazo[aria-pressed='true'] {
+    background: var(--status-abandonado-largo-plazo);
+    border-color: var(--status-abandonado-largo-plazo);
+  }
+  .pill--finalizado[aria-pressed='true'] {
+    background: var(--status-finalizado);
+    border-color: var(--status-finalizado);
+  }
+
+  .filters__count {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+  }
+</style>

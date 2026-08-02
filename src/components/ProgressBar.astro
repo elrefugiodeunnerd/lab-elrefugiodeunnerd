@@ -1,0 +1,75 @@
+---
+import type { Status } from '../lib/status';
+
+interface Props {
+  progress: number;
+  status: Status;
+  /** Accessible name — needed because several bars share a page. */
+  label: string;
+}
+
+const { progress, status, label } = Astro.props;
+---
+
+<div class="progress">
+  <div
+    class={`progress__track progress__track--${status}`}
+    role="progressbar"
+    aria-valuenow={progress}
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-label={`Progreso de ${label}`}
+  >
+    <div class="progress__fill" style={`--value: ${progress}%`}></div>
+  </div>
+  <span class="progress__value meta">{progress}%</span>
+</div>
+
+<style>
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .progress__track {
+    position: relative;
+    flex: 1;
+    height: 5px;
+    background: var(--surface-2);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress__fill {
+    height: 100%;
+    width: var(--value);
+    border-radius: inherit;
+    background: currentcolor;
+    transition: width var(--duration-normal) var(--ease);
+  }
+
+  .progress__track--en-curso {
+    color: var(--status-en-curso);
+  }
+  .progress__track--retomado {
+    color: var(--status-retomado);
+  }
+  .progress__track--abandonado-temporalmente {
+    color: var(--status-abandonado-temporalmente);
+  }
+  .progress__track--abandonado-largo-plazo {
+    color: var(--status-abandonado-largo-plazo);
+  }
+  .progress__track--finalizado {
+    color: var(--status-finalizado);
+  }
+
+  .progress__value {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--text-xs);
+    min-width: 2.75rem;
+    text-align: right;
+  }
+</style>

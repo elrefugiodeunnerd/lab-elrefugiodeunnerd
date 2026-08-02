@@ -1,0 +1,58 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!--
+      Runs before first paint, deliberately inline and blocking.
+
+      Two jobs: flip `no-js` -> `js` so the CSS can collapse cards without a
+      flash of fully-open content, and re-apply a stored theme override before
+      anything renders. Both must happen before paint, which rules out a
+      module script.
+    -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.remove('no-js');
+        root.classList.add('js');
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light' || stored === 'dark') {
+            root.dataset.theme = stored;
+          }
+        } catch (e) {
+          /* storage unavailable — fall through to prefers-color-scheme */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#taller">Saltar al taller</a>
+    <slot />
+  </body>
+</html>

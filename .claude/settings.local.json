@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Test-Path *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Code\\\\lab_elrefugiodeunnerd\" -Force | ForEach-Object { \"$\\($_.Attributes\\) | $\\($_.Name\\)\" })",
+      "PowerShell(npm approve-scripts *)",
+      "PowerShell(npm run *)",
+      "PowerShell(npm view *)",
+      "PowerShell(node -e \"const l=require\\('./package-lock.json'\\);console.log\\('lockfileVersion:',l.lockfileVersion\\);console.log\\('root astro range:',l.packages[''].dependencies.astro\\);console.log\\('resolved astro:',l.packages['node_modules/astro'].version\\);const s=Object.keys\\(l.packages\\).filter\\(k=>/satteri/i.test\\(k\\)\\);console.log\\('satteri packages in lock:',s.length===0?'none \\(good\\)':s.join\\(', '\\)\\);console.log\\('sharp present:',!!l.packages['node_modules/sharp']\\);\")",
+      "PowerShell(git status *)",
+      "PowerShell(node -e \"const cp=require\\('child_process'\\);const e=cp.execSync\\('npm view astro@6.4.8 engines --json'\\).toString\\(\\);console.log\\('astro@6.4.8 engines:',e.trim\\(\\)\\);\")",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:4321/\" -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\"; \"Longitud: $\\($r.Content.Length\\)\"; \"Badges: $\\(\\([regex]::Matches\\($r.Content,'badge--'\\)\\).Count\\)\"; \"Intro EN restante: $\\(\\([regex]::Matches\\($r.Content,'My workbench'\\)\\).Count\\)\")",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:4321/\" -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\"; \"Botones cerrar: $\\(\\([regex]::Matches\\($r.Content,'data-collapse'\\)\\).Count\\)\"; \"Cards: $\\(\\([regex]::Matches\\($r.Content,'data-project='\\)\\).Count\\)\")"
+    ]
+  }
+}
