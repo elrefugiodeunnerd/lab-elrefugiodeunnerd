@@ -1,29 +1,23 @@
 ---
-title: Aprender Rust (otra vez)
-category: Aprendiendo
-description: Tercer intento. Llegué al capítulo de ownership, lo entendí, y luego no volví a tocarlo en meses.
-status: abandonado-largo-plazo
-progress: 25
-started: 2025-03-16
+title: Amstrad PC 2086
+category: Arreglando
+description: Intentando arreglar esta reliquia
+status: en-curso
+progress: 5
+started: 2025-08-10
+cover: ./cover.jpg
+coverAlt: Mi Amstrad PC 2086 D
 tech:
-  - Rust
+  - Investigación y paciencia
 links:
-  - label: The Rust Book
-    url: https://doc.rust-lang.org/book/
 notes:
   - Ownership tiene sentido cuando lo lees. Otra cosa es escribirlo sin mirar.
   - Necesito un proyecto de verdad, no ejercicios sueltos.
 updates:
-  - date: 2025-09-30
-    text: Última vez que abrí el libro.
-  - date: 2025-03-16
-    text: Empiezo por el capítulo 1. Otra vez.
+  - date: 2026-08-03
+    text: Investigo reemplazos (ya sé que pasó un año, no está en mi casa, por eso).
+  - date: 2025-08-10
+    text: Me doy cuenta de que no funciona
 ---
 
-Lo dejo aquí precisamente porque está parado. Es la clase de cosa que
-desaparecería de una lista de "proyectos activos" y luego me olvidaría de que
-alguna vez la empecé.
-
-El patrón es siempre el mismo: leo, hago los ejercicios, y me quedo sin excusa
-para seguir porque no tengo nada real que construir. La próxima vez empiezo por
-el proyecto.
+Estoy intentando restaurar esta pequeña reliquia, parece que la disquetera derecha no funciona, he de comprobar si es la almientación o la disquetera, ojalá que sea lo segundo que es más fácil de reemplazar. :D Os voy informando
