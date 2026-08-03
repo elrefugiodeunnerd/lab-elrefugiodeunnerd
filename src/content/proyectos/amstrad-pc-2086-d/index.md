@@ -9,7 +9,6 @@ cover: ./cover.jpg
 coverAlt: Mi Amstrad PC 2086 D
 tech:
   - Investigación y paciencia
-links:
 notes:
   - Ownership tiene sentido cuando lo lees. Otra cosa es escribirlo sin mirar.
   - Necesito un proyecto de verdad, no ejercicios sueltos.
