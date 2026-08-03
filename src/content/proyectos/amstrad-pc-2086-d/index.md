@@ -9,7 +9,7 @@ cover: ./cover.jpg
 coverAlt: Mi Amstrad PC 2086 D
 tech:
   - Investigación y paciencia
-notes:
+updates:
   - date: 2026-08-03
     text: Investigo reemplazos (ya sé que pasó un año, no está en mi casa, por eso).
   - date: 2025-08-10
