@@ -10,7 +10,6 @@ coverAlt: Mi Amstrad PC 2086 D
 tech:
   - Investigación y paciencia
 notes:
-  - Supongo que tocará cruzar los cables de alimentación para ver si es eso, un día de estos lo abro y lo hago.
   - date: 2026-08-03
     text: Investigo reemplazos (ya sé que pasó un año, no está en mi casa, por eso).
   - date: 2025-08-10
