@@ -1,39 +1,24 @@
 ---
-title: Arch Linux en el portátil viejo
-category: Sistemas
-description: Revivir un portátil de 2013 con Arch y un escritorio mínimo, a ver cuánto aguanta como máquina de diario.
+title: whoami.wiki    
+category: Cacharreando
+description: La Wikipedia de mi vida
 status: en-curso
-progress: 65
-started: 2026-06-14
-pinned: true
+progress: 70
+started: 2026-08-04
+cover: ./cover.jpg
+coverAlt: La herramienta en cuestión
 tech:
-  - Arch Linux
-  - Hyprland
-  - systemd-boot
-links:
-  - label: Arch Wiki — Installation guide
-    url: https://wiki.archlinux.org/title/Installation_guide
-notes:
-  - El táctil va raro con libinput. Apuntado para mirar con calma.
-  - La batería aguanta 2h reales. Suficiente para lo que quiero.
+  - Claude
+  - La herramienta
+  - Paciencia
 updates:
-  - date: 2026-07-28
-    text: Hyprland configurado y arrancando solo. Ya lo uso para escribir notas.
-  - date: 2026-07-05
-    text: Instalación base terminada. systemd-boot en lugar de GRUB, mucho más simple.
-  - date: 2026-06-14
-    text: Formateado. Punto de no retorno.
+  - date: 2026-08-03
+    text: Vale, he tenido que portearlo todo a Linux con ayuda de Claude, por suerte está en electron y es multiplataforma aunque esté compilado para MacOS (pronto como hacerlo)
+
+links:
+  - label: whoami.wiki
+    url: https://whoami.wiki
+
 ---
 
-Tenía este portátil muerto en un cajón y me daba pena tirarlo. La idea es
-dejarlo usable sin pelearme demasiado: instalación mínima, un compositor ligero
-y nada más.
-
-Lo interesante no es Arch en sí, es ver **cuánto se puede exprimir** hardware de
-hace más de una década cuando le quitas todo lo que no hace falta.
-
-## Dónde está ahora
-
-- Sistema base funcionando
-- Hyprland arrancando en automático
-- Pendiente: arreglar el táctil y decidir qué hago con el suspend
+Visto en la web de [Matizeta](matizeta.com) a día de hoy está solo disponible para MacOS, para eso existe Claude supongo. Hizo un port para Linux ya que está basado en Electron, que es multiplataforma. Solo me falta meterle toda mi vida, conversaciones, cumpleaños o todo lo que se te ocurra. Y lo más importante: **Todo en local**.
