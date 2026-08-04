@@ -5,7 +5,7 @@ description: La Wikipedia de mi vida
 status: en-curso
 progress: 70
 started: 2026-08-04
-cover: ./cover.jpg
+cover: ./cover.png
 coverAlt: La herramienta en cuestión
 tech:
   - Claude
