@@ -2,7 +2,7 @@
 title: Aprendiendo C
 category: Software
 description: Intentar aprender C y documentarlo.
-status: activo
+status: en-curso
 progress: 5
 started: 2026-09-05
 updated: 2026-09-10
